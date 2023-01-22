@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer sprite;
     [SerializeField] private float jumpForce;
     [SerializeField] private float moveSpeed;
+    private enum MovementState { idle, running, jumping, falling }
     
     private float xDirection = 0f;
     void Start()
@@ -39,18 +40,29 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void UpdateAnimation() {
+        MovementState state;
         if (xDirection > 0f)
         {
             sprite.flipX = false;
-            anim.SetBool("running", true);
+            state = MovementState.running;
         }
         else if (xDirection < 0f)
         {
             sprite.flipX = true;
-            anim.SetBool("running", true);
+            state = MovementState.running;
         } else
         {
-            anim.SetBool("running", false);
+            state = MovementState.idle;
         }
+
+        if (rb.velocity.y > 0.1f)
+        {
+            state = MovementState.jumping;
+        } else if (rb.velocity.y < -0.1f)
+        {
+            state = MovementState.falling;
+        }
+        // casting to int
+        anim.SetInteger("state", (int) state);
     }
 }
