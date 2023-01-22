@@ -25,8 +25,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        Move();
-        Jump();
+        // Don't allow movement if player has died
+        if (rb.bodyType != RigidbodyType2D.Static)
+        {
+            Move();
+            Jump();
+        }
         UpdateAnimation();
     }
 
